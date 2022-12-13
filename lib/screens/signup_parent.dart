@@ -7,6 +7,8 @@ import 'package:kid_sec/widgets/welcome.dart';
 import '../core/constants/colors/kolors.dart';
 import '../widgets/choice_card.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ParentSignUp extends StatelessWidget {
   const ParentSignUp({super.key});
@@ -118,6 +120,33 @@ class _ParentPageState extends State<ParentPage> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                               // TODO: Perform login using the _username and _password
+                               var data = {
+                                "name": _username,
+                                "email": _email,
+                                "parent_email":"",
+                                "password": _password,
+                                "tag": "parent"
+                              };
+                              print(data);
+                              // Encode the JSON object as a string
+                              var body = jsonEncode(data);
+                              print(body);
+                              var url = Uri.parse(
+                                  "https://kidsec-backend-production.up.railway.app/api/users");
+                              http
+                                  .post(url,
+                                      headers: <String, String>{
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8',
+                                      },
+                                      body: body)
+                                  .then((response) {
+                                // Process the response
+                                print(response.body);
+                              }).catchError((error) {
+                                // Handle any errors that may have occurred
+                                print(error);
+                              });
 
                             }
                           },

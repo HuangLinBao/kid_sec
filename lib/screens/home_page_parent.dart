@@ -8,8 +8,8 @@ import 'package:kid_sec/widgets/main_page_card.dart';
 import 'home_page_parent.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+   HomePage({super.key});
+  
   @override
   _HomePageState createState() => _HomePageState();
 }

@@ -39,6 +39,8 @@ dependencies:
   auto_size_text: ^3.0.0
   get: ^4.6.5
   flutter_svg: ^1.1.6
+  http: ^0.13.5
+  json_serializable: ^6.5.4
 
 dev_dependencies:
   flutter_test:

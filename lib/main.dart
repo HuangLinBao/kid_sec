@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: isAuth ? "/home": "/",
       routes: {
-        '/':(context) => LandingPage(), //TODO
+        '/':(context) => LandingPage(),
         '/signup_parent': (context) => ParentSignUp(),
         '/login':(context) => Login(),
         '/home':(context) => HomePage(),

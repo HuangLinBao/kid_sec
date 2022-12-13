@@ -5,6 +5,8 @@ import 'package:kid_sec/screens/home_page_parent.dart';
 import 'package:kid_sec/screens/signup_parent.dart';
 import 'package:kid_sec/widgets/image_view.dart';
 import '../core/constants/colors/kolors.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -108,7 +110,31 @@ class _LoginPageState extends State<LoginPage> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                               // TODO: if credentials were correct redirect to home and save credentials in local phone storage
-                              Get.offNamed('/home');
+                              var data = {
+                                "email": _email,
+                                "password": _password,
+                              };
+                              print(data);
+                              // Encode the JSON object as a string
+                              var body = jsonEncode(data);
+                              print(body);
+                              var url = Uri.parse(
+                                  "https://kidsec-backend-production.up.railway.app/api/auth");
+                              http
+                                  .post(url,
+                                      headers: <String, String>{
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8',
+                                      },
+                                      body: body)
+                                  .then((response) {
+                                // Process the response
+                                print(response.body);
+                                Get.off(HomePage(),arguments:[ _email]);
+                              }).catchError((error) {
+                                // Handle any errors that may have occurred
+                                print(error);
+                              });
 
                             }
                           },
@@ -120,8 +146,8 @@ class _LoginPageState extends State<LoginPage> {
                             const Text("Don't have an account?"),
                             InkWell(
                               child: const Text(" Signup",
-                                  style:
-                                  TextStyle(fontSize: 15, color: Kolors.kFuchsia)),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Kolors.kFuchsia)),
                               onTap: () {
                                 //TODO: we'll sort out that ting later bruv.
                                 Get.toNamed("/signup_parent");

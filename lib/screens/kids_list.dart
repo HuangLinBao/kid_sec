@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kid_sec/widgets/children_card.dart';
 
 import 'package:kid_sec/widgets/main_page_card.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ChildrenList extends StatefulWidget {
   const ChildrenList({super.key});
@@ -16,13 +19,38 @@ class _ChildrenListState extends State<ChildrenList> {
   Widget build(BuildContext context) {
     // to get size
     var size = MediaQuery.of(context).size;
+    var children = Get.arguments;
+    print(children);
+    print("children");
 
     // style
     const cardTextStyle = TextStyle(
         fontFamily: "Montserrat Regular",
         fontSize: 14,
         color: Color.fromRGBO(63, 63, 63, 1));
-
+      var data = {
+                                "email": children,
+                              };
+                              print(data);
+                              // Encode the JSON object as a string
+                              var body = jsonEncode(data);
+                              print(body);
+                              var url = Uri.parse(
+                                  "https://kidsec-backend-production.up.railway.app/api/children");
+                              http
+                                  .post(url,
+                                      headers: <String, String>{
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8',
+                                      },
+                                      body: body)
+                                  .then((response) {
+                                // Process the response
+                                print(response.body);
+                              }).catchError((error) {
+                                // Handle any errors that may have occurred
+                                print(error);
+                              });
     return Scaffold(
       
       body: Stack(

@@ -7,6 +7,8 @@ import 'package:kid_sec/widgets/welcome.dart';
 import '../core/constants/colors/kolors.dart';
 import '../widgets/choice_card.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ChildSignUp extends StatelessWidget {
   const ChildSignUp({super.key});
@@ -80,7 +82,6 @@ class _ParentPageState extends State<ParentPage> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-
                       children: <Widget>[
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Name'),
@@ -103,7 +104,8 @@ class _ParentPageState extends State<ParentPage> {
                         ),
                         box,
                         TextFormField(
-                          decoration: const InputDecoration(labelText: "Guardian's Email"),
+                          decoration: const InputDecoration(
+                              labelText: "Guardian's Email"),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter an email';
@@ -113,7 +115,8 @@ class _ParentPageState extends State<ParentPage> {
                         ),
                         box,
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Password'),
+                          decoration:
+                              const InputDecoration(labelText: 'Password'),
                           obscureText: true,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -129,7 +132,33 @@ class _ParentPageState extends State<ParentPage> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                               //TODO: perform Sign up here.
-
+                              var data = {
+                                "name": _username,
+                                "email": _email,
+                                "parent_email": _parentEmail,
+                                "password": _password,
+                                "tag": "child"
+                              };
+                              print(data);
+                              // Encode the JSON object as a string
+                              var body = jsonEncode(data);
+                              print(body);
+                              var url = Uri.parse(
+                                  "https://kidsec-backend-production.up.railway.app/api/users");
+                              http
+                                  .post(url,
+                                      headers: <String, String>{
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8',
+                                      },
+                                      body: body)
+                                  .then((response) {
+                                // Process the response
+                                print(response.body);
+                              }).catchError((error) {
+                                // Handle any errors that may have occurred
+                                print(error);
+                              });
                             }
                           },
                         ),
@@ -147,8 +176,7 @@ class _ParentPageState extends State<ParentPage> {
                   const Text("Already have an account?"),
                   InkWell(
                     child: const Text(" Login",
-                        style:
-                        TextStyle(fontSize: 15, color: Kolors.kFuchsia)),
+                        style: TextStyle(fontSize: 15, color: Kolors.kFuchsia)),
                     onTap: () {
                       Get.toNamed("./login");
                     },

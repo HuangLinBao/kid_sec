@@ -40,7 +40,7 @@ class _WelcomeState extends State<Welcome> {
           alignment: Alignment.topLeft,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.pink,
+              color: Kolors.kSuperLightFuchsia,
               borderRadius: const BorderRadius.only(
                   topRight: rad, bottomRight: rad),
               border: Border.all(
@@ -54,7 +54,7 @@ class _WelcomeState extends State<Welcome> {
               padding:  EdgeInsets.all(w*0.019),
               child: Center(
                 child: AutoSizeText(
-                  "It is easier to build up a child than it is to repair and adult.",
+                  "It is easier to build up a child than it is to repair an adult.",
                   style: welcomeStyle,
                   textAlign: TextAlign.left,
                   maxLines: 2,

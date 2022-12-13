@@ -6,15 +6,24 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../core/constants/colors/kolors.dart';
 
 
-class ImageView extends StatelessWidget {
+class ImageView extends StatefulWidget {
 
+
+  const ImageView({Key? key}) : super(key: key);
+
+  @override
+  State<ImageView> createState() => _ImageViewState();
+}
+
+class _ImageViewState extends State<ImageView> {
   late TextStyle welcomeStyle;
 
-  ImageView({Key? key}) : super(key: key);
-
   var ImageList = ['illustration1.png', 'illustration2.png','illustration3.png', 'illustration4.png'];
-
-  final _random = Random();
+  @override
+  initState() {
+    super.initState();
+    ImageList.shuffle();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +35,17 @@ class ImageView extends StatelessWidget {
         .of(context)
         .size
         .width;
-    SizedBox box = SizedBox(
-      height: h*0.07,
-    );
-    var element = ImageList[_random.nextInt(ImageList.length)];
+    String element = ImageList[0];
     String img = 'assets/images/$element';
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Center(
           child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(15)) ,
             child: Image.asset(
               img,
               width: w*0.9,
-              height: h*0.2,
+              height: h*0.15,
               fit: BoxFit.contain,
             ),
           ),

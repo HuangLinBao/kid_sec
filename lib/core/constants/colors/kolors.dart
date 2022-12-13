@@ -3,7 +3,19 @@ import 'dart:ui';
 
 class Kolors {
 
-
+  static MaterialColor mkFuchsia = const MaterialColor(0xffFC427B, <int, Color>{
+    50: Color(0xffFC427B),
+    100: Color(0xfffb3f78),
+    200: Color(0xfffa1f61),
+    300: Color(0xffFC427B),
+    400: Color(0xffFC427B),
+    500: Color(0xffFC427B),
+    600: Color(0xffFC427B),
+    700: Color(0xffFC427B),
+    800: Color(0xfff81a5f),
+    900: Color(0xffff0055),
+  },
+  );
 
   static const Color kDarkPurple = Color(0xff341f97);
   static const Color kPurple = Color(0xff5f27cd);

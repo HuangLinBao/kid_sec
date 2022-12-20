@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:kid_sec/screens/app_list.dart';
 import 'package:kid_sec/screens/home_page_parent.dart';
 import 'package:kid_sec/screens/kids_list.dart';
 import 'package:kid_sec/screens/landing_page.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/home':(context) => HomePage(),
         '/signup_child':(context)=> ChildSignUp(),
         '/kids_list': (context) => ChildrenList(),
+        '/app_list': (context) => AppList(),
       },
 
       theme: ThemeData(

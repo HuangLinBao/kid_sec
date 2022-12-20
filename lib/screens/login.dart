@@ -130,7 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                                   .then((response) {
                                 // Process the response
                                 print(response.body);
-                                Get.off(HomePage(),arguments:[ _email]);
+                                Map<String, dynamic> user = jsonDecode(body);
+                                print(user.toString());
+                                Get.offNamed('/home',arguments:user);
                               }).catchError((error) {
                                 // Handle any errors that may have occurred
                                 print(error);

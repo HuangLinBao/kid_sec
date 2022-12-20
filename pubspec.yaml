@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^1.1.6
   http: ^0.13.5
   json_serializable: ^6.5.4
+  skeleton_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

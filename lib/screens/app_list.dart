@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kid_sec/widgets/app_card.dart';
 import 'package:kid_sec/widgets/children_card.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -9,16 +10,16 @@ import 'package:skeleton_text/skeleton_text.dart';
 import '../widgets/skeleton_container.dart';
 
 
-class ChildrenList extends StatefulWidget {
-  const ChildrenList({super.key});
+class AppList extends StatefulWidget {
+  const AppList({super.key});
 
   @override
-  _ChildrenListState createState() => _ChildrenListState();
+  _AppListState createState() => _AppListState();
 }
 
 
 
-class _ChildrenListState extends State<ChildrenList> {
+class _AppListState extends State<AppList> {
   var body = Get.arguments;
   Future<Map<String,dynamic>> _fetchNetworkCall()async{
     late var res;
@@ -75,7 +76,7 @@ class _ChildrenListState extends State<ChildrenList> {
     //                             print(error);
     //                           });
     return Scaffold(
-      
+
       body: Stack(
         children: <Widget>[
           Container(
@@ -207,10 +208,10 @@ class _ChildrenListState extends State<ChildrenList> {
                       scrollDirection:Axis.vertical,
                       child: Column(
                         children: <Widget>[
-                          ChildrenCard("assets/images/kid.png","Lorem","04/10/2000"),
-                          ChildrenCard("assets/images/kid.png","Lorem","04/10/2000"),
-                          ChildrenCard("assets/images/kid.png","Lorem","04/10/2000"),
-                          ChildrenCard("assets/images/kid.png","Lorem","04/10/2000"),
+                          AppCard("assets/images/kid.png","Lorem","04/10/2000"),
+                          AppCard("assets/images/kid.png","Lorem","04/10/2000"),
+                          AppCard("assets/images/kid.png","Lorem","04/10/2000"),
+                          AppCard("assets/images/kid.png","Lorem","04/10/2000"),
                         ],
                       ),
                     ),

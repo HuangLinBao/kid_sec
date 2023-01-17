@@ -17,7 +17,7 @@ class MainCard extends StatefulWidget {
     goTo = goto;
     styleGoTo = const TextStyle(
        fontWeight: FontWeight.w500,
-        fontSize: 14,
+        fontSize: 16,
         color: Kolors.KBlack);
     onClick = onTap;
 
@@ -33,9 +33,14 @@ class _MainCardState extends State<MainCard> {
   Widget build(BuildContext context) {
     return Card(
       shape:RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8)
+          borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(
+          color:Kolors.KBlack,
+          width: 3,
+        ),
+
       ),
-      elevation: 4,
+      elevation: 0,
       child: InkWell(
         onTap: widget.onClick,
         child: Column(

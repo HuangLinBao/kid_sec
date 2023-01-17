@@ -81,7 +81,6 @@ class _ParentPageState extends State<ParentPage> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-
                       children: <Widget>[
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Name'),

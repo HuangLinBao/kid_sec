@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:kid_sec/screens/app_list.dart';
+import 'package:kid_sec/screens/child_profile.dart';
 import 'package:kid_sec/screens/home_page_parent.dart';
 import 'package:kid_sec/screens/kids_list.dart';
 import 'package:kid_sec/screens/landing_page.dart';
 import 'package:kid_sec/screens/login.dart';
 import 'package:kid_sec/screens/signup_child.dart';
 import 'package:kid_sec/screens/signup_parent.dart';
+import 'package:kid_sec/screens/tasks_list.dart';
 import 'core/constants/colors/kolors.dart';
 
 void main() {
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/signup_child':(context)=> ChildSignUp(),
         '/kids_list': (context) => ChildrenList(),
         '/app_list': (context) => AppList(),
+        '/child_profile': (context) => ChildProfile(),
+        '/tasks_list': (context) => TasksList(),
       },
 
       theme: ThemeData(

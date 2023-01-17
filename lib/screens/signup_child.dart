@@ -144,7 +144,7 @@ class _ParentPageState extends State<ParentPage> {
                               var body = jsonEncode(data);
                               print(body);
                               var url = Uri.parse(
-                                  "https://kidsec-backend-production.up.railway.app/api/users");
+                                  "https://zesty-skate-production.up.railway.app/api/users");
                               http
                                   .post(url,
                                       headers: <String, String>{

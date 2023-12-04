@@ -8,6 +8,8 @@ import '../core/constants/colors/kolors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../utils/logger.dart';
+
 abstract class ValidatorMixin {
   String validate();
 }
@@ -73,7 +75,7 @@ class MyEitherOrValidator extends EitherOrValidator {
 
 
 class Login extends StatelessWidget {
-  const Login({super.key});
+   Login({super.key});
 
   // This widget is the root of your application.
   @override
@@ -100,9 +102,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final log = logger(LoginPage);
   final _formKey = GlobalKey<FormState>();
   final usernameEmailController = TextEditingController();
-
+  final bool isParent = Get.arguments;
   final emailController = TextEditingController();
 
   final emailRegExp = RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
@@ -174,11 +177,13 @@ class _LoginPageState extends State<LoginPage> {
                               return 'Please enter a password';
                             }
                             else{
-                                if(value!.length < minLength)
-                                    return 'Field should have at least $minLength characters';
-                                  if(value!.contains("@")) {
-                                    if (!emailRegExp.hasMatch(value!))
+                                if(value.length < minLength) {
+                                  return 'Field should have at least $minLength characters';
+                                }
+                                  if(value.contains("@")) {
+                                    if (!emailRegExp.hasMatch(value)) {
                                       return 'Invalid email address';
+                                    }
                                   }
                             }
                           },
@@ -201,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         box,
                         ElevatedButton(
-                          child: Text('Login'),
+                          child: const Text('Login'),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
@@ -227,15 +232,18 @@ class _LoginPageState extends State<LoginPage> {
 
                                 Map<String, dynamic> user = jsonDecode(body);
                                 if(response.body == 'true'){
-                                  Get.offNamed('/home',arguments:user);
+                                  log.i("heading towards Splash isParent = $isParent");
+                                  log.i("Credentials = $body");
+                                    Get.offAllNamed('/splash', arguments: [user,isParent]);
+
                                 }
                                 else{
-                                  print("Wrong Credentials");
+                                  log.e("Wrong Credentials");
                                 }
 
                               }).catchError((error) {
                                 // Handle any errors that may have occurred
-                                print(error);
+                                log.i(error);
                               });
 
                             }
@@ -252,7 +260,12 @@ class _LoginPageState extends State<LoginPage> {
                                       fontSize: 15, color: Kolors.kFuchsia)),
                               onTap: () {
                                 //TODO: we'll sort out that ting later bruv.
-                                Get.toNamed("/signup_parent");
+                                if(isParent){
+                                  Get.offNamed("/signup_parent");
+                                }else{
+                                  Get.offNamed("/signup_child");
+                                }
+
                               },
                             ),
                           ],

@@ -6,8 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:kid_sec/core/constants/colors/kolors.dart';
 import 'package:kid_sec/utils/color_extensions.dart';
 
+import '../utils/logger.dart';
+
 class BarChartSample extends StatefulWidget {
-  const BarChartSample({super.key});
+  late String name;
+  late List<dynamic> data;
+  late VoidCallback movePage;
+   BarChartSample(String childName,List<dynamic> usageData, VoidCallback move,{Key? key}) : super(key: key) {
+    name = childName;
+    data = usageData;
+    movePage = move;
+}
 
   List<Color> get availableColors => const <Color>[
     Colors.purpleAccent,
@@ -23,6 +32,7 @@ class BarChartSample extends StatefulWidget {
 }
 
 class BarChartSampleState extends State<BarChartSample> {
+  final log = logger(BarChartSample);
   final Color barBackgroundColor = Kolors.KConcrete;
   final Duration animDuration = const Duration(milliseconds: 250);
 
@@ -43,46 +53,50 @@ class BarChartSampleState extends State<BarChartSample> {
         elevation: 0,
         child: Stack(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  const Text(
-                    'Most Recent Screen usage',
-                    style: TextStyle(
-                      color: Kolors.KBlack,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  const Text(
-                    'For Lorem',
-                    style: TextStyle(
-                      color: Kolors.kFuchsia,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 38,
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: BarChart(
-                        isPlaying ? randomData() : mainBarData(),
-                        swapAnimationDuration: animDuration,
+            InkWell(
+              onTap: (){},
+              radius: 20,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    const Text(
+                      'Most Recent Screen usage',
+                      style: TextStyle(
+                        color: Kolors.KBlack,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                ],
+                    const SizedBox(
+                      height: 4,
+                    ),
+                     Text(
+                      'For ${widget.name}',
+                      style: const TextStyle(
+                        color: Kolors.kFuchsia,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 38,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: BarChart(
+                          isPlaying ? randomData() : mainBarData(),
+                          swapAnimationDuration: animDuration,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                  ],
+                ),
               ),
             ),
             Padding(
@@ -140,26 +154,18 @@ class BarChartSampleState extends State<BarChartSample> {
     );
   }
 
-  List<BarChartGroupData> showingGroups() => List.generate(7, (i) {
-    switch (i) {
-      case 0:
-        return makeGroupData(0, 5, isTouched: i == touchedIndex);
-      case 1:
-        return makeGroupData(1, 6.5, isTouched: i == touchedIndex);
-      case 2:
-        return makeGroupData(2, 5, isTouched: i == touchedIndex);
-      case 3:
-        return makeGroupData(3, 7.5, isTouched: i == touchedIndex);
-      case 4:
-        return makeGroupData(4, 9, isTouched: i == touchedIndex);
-      case 5:
-        return makeGroupData(5, 11.5, isTouched: i == touchedIndex);
-      case 6:
-        return makeGroupData(6, 6.5, isTouched: i == touchedIndex);
-      default:
-        return throw Error();
+  List<BarChartGroupData> showingGroups() {
+    final dailyScreenTime =  widget.data; // Your list of daily screen time
+    log.i(dailyScreenTime);
+    final result = <BarChartGroupData>[];
+    for (int i = 0; i < 7; i++) {
+    final item = dailyScreenTime[i];
+    log.i(item['screenTime']);
+    double hours = (item['screenTime'] / 60).roundToDouble();
+    result.add(makeGroupData(i, hours, isTouched: i == touchedIndex));
     }
-  });
+    return result;
+  }
 
   BarChartData mainBarData() {
     return BarChartData(

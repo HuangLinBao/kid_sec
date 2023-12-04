@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kid_sec/main.dart';
 import 'package:kid_sec/widgets/profile_banner.dart';
 import 'package:http/http.dart' as http;
 import '../core/constants/colors/kolors.dart';
+import '../utils/essentials.dart';
 import '../utils/logger.dart';
 import '../widgets/bar_chart.dart';
 import '../widgets/main_page_card.dart';
@@ -23,6 +25,10 @@ class _ChildProfileState extends State<ChildProfile> {
   List body = Get.arguments;
   final log = logger(ChildProfile);
   late Future<Map<String,dynamic>>  _kidData;
+
+  late Future<List<dynamic>> _usage;
+
+
 
   Future<Map<String,dynamic>> _fetchNetworkCall()async{
     late var res;
@@ -49,10 +55,20 @@ class _ChildProfileState extends State<ChildProfile> {
     return user;
 
   }
+
+  initToken()async{
+    var futures = [fetchTokenNetworkCall(body[1])];
+    await Future.wait(futures);
+    String token = sharedPreferences.getString("tmpToken")??'';
+    _usage = fetchDailyUsage(token);
+
+
+  }
   @override
   void initState() {
     super.initState();
     _kidData = _fetchNetworkCall();
+    initToken();
   }
 
 
@@ -138,10 +154,6 @@ class _ChildProfileState extends State<ChildProfile> {
                     },
 
 
-
-
-
-
                   ),
                   FutureBuilder<Map<String,dynamic>>(
                     future: _kidData, // async work
@@ -184,7 +196,72 @@ class _ChildProfileState extends State<ChildProfile> {
                       primary: false,
                       crossAxisCount: 1,
                       children: <Widget>[
-                        const BarChartSample(),
+
+                        FutureBuilder<Map<String,dynamic>>(
+                          future: _kidData, // async work
+                          builder: (ctx,snapshot){
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              // If we got an error
+                              if (snapshot.hasError) {
+                                log.e("${snapshot.error}");
+                                return Center(
+                                  child: Text(
+                                    '${snapshot.error} occurred',
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                );
+
+                                // if we got our data
+                              } else if (snapshot.hasData) {
+                                // Extracting data from snapshot object
+                                final nameData = snapshot.data as Map<String,dynamic>;
+                                return  FutureBuilder<List<dynamic>>(
+                                  future: _usage, // async work
+                                  builder: (ctx,snapshot){
+                                    if (snapshot.connectionState == ConnectionState.done) {
+                                      // If we got an error
+                                      if (snapshot.hasError) {
+                                        log.e("${snapshot.error}");
+                                        return Center(
+                                          child: Text(
+                                            '${snapshot.error} occurred',
+                                            style: const TextStyle(fontSize: 15),
+                                          ),
+                                        );
+
+                                        // if we got our data
+                                      } else if (snapshot.hasData) {
+                                        // Extracting data from snapshot object
+                                        final data = snapshot.data as List<dynamic>;
+                                        return  BarChartSample(nameData.values.elementAt(1),data,(){});
+
+                                      }
+                                    }
+
+
+
+                                    return const SkeletonContainer.card(
+                                      width: 160,
+                                      height: 160,
+                                    );
+                                  },
+
+
+                                );
+
+                              }
+                            }
+
+
+
+                            return const SkeletonContainer.card(
+                              width: 160,
+                              height: 160,
+                            );
+                          },
+
+
+                        ),
                         GridView.count(
                           mainAxisSpacing: 0,
                           crossAxisSpacing: 0,
@@ -194,8 +271,8 @@ class _ChildProfileState extends State<ChildProfile> {
                             MainCard('https://www.svgrepo.com/show/177469/browser-web.svg', 'App List', () {Get.toNamed('/app_list',arguments:body[0] ); }),
                             MainCard('https://www.svgrepo.com/show/189280/tasks-tick.svg', "Task List", () {Get.toNamed('/tasks_list',arguments:[body[0],body[1]] );}),
                             MainCard('https://www.svgrepo.com/show/279455/certificate-contract.svg', 'Academic Overview', () {/*TODO coming soon*/ }),
-                            MainCard('https://www.svgrepo.com/show/288153/location.svg', 'Location', () { }),
-                            MainCard('https://www.svgrepo.com/show/454710/feature-security-seo.svg', 'Search Restrictions', () { }),
+                            MainCard('https://www.svgrepo.com/show/288153/location.svg', 'Location', () {Get.toNamed('/location',arguments:[body[0],body[1]] );}),
+                            MainCard('https://www.svgrepo.com/show/454710/feature-security-seo.svg', 'Search Restrictions', () {}),
                           ],
                         ),
                       ],

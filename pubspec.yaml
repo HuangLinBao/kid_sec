@@ -48,6 +48,23 @@ dependencies:
   shared_preferences: ^2.0.16
   logger: ^1.1.0
   lottie: ^2.2.0
+  device_apps: ^2.2.0
+  flutter_map: ^3.1.0
+  latlong2: ^0.8.1
+  location: ^4.4.0
+  rxdart: ^0.27.7
+  async: ^2.9.0
+  turf: ^0.0.7
+  mapbox_maps_flutter: ^0.4.0
+  usage_stats: ^1.2.0
+  firebase_core: ^2.4.1
+  flutter_local_notifications: ^13.0.0
+  cloud_firestore: ^4.3.1
+  firebase_messaging: ^14.2.1
+  flutter_dotenv: ^5.0.2
+  geoflutterfire2: ^2.3.14
+  package_info: ^2.0.2
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +92,7 @@ flutter:
   assets:
      - assets/images/
      - assets/JSON/
+     - assets/config/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

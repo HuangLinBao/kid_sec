@@ -1,13 +1,13 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:kid_sec/main.dart';
 import 'package:kid_sec/widgets/profile_banner.dart';
-import 'package:http/http.dart' as http;
 import 'package:kid_sec/widgets/tasks_card.dart';
 import '../core/constants/colors/kolors.dart';
 import '../utils/logger.dart';
 import '../widgets/skeleton_container.dart';
+import 'package:kid_sec/utils/essentials.dart';
 
 class TasksList extends StatefulWidget {
   const TasksList({super.key});
@@ -22,120 +22,23 @@ class _TasksListState extends State<TasksList> {
   late Future<Map<String, dynamic>> _kidData;
   late Future<List> _tasksList;
   late TextEditingController controller;
+  late Future <String> _token;
+  late Future <String> _name;
 
-  Future<Map<String, dynamic>> _fetchNetworkCall() async {
-    late var res;
-    late Map<String, dynamic> user;
+  void initData() async{
 
-    String param = body[1];
-    var url = Uri.parse(
-        "https://zesty-skate-production.up.railway.app/api/names/byID/$param");
-    await http.get(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    ).then((response) {
-      res = response.body;
-      user = jsonDecode(res);
-    }).catchError((error) {
-      // Handle any errors that may have occurred
-      return (error);
-    });
-    return user;
-  }
-
-  Future<List> _fetchTasksList() async {
-    late var res;
-    late List user;
-    String param = body[1];
-    ;
-    var url = Uri.parse(
-        "https://zesty-skate-production.up.railway.app/api/tasks/fetch/$param");
-    await http.get(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    ).then((response) {
-      // Process the response
-      res = response.body;
-      user = jsonDecode(res);
-      return user;
-    }).catchError((error) {
-      log.e("from fetchNetworkCall => $error");
-      return Future.value([error]);
-    });
-    return user;
-  }
-
-  Future<List> _addTaskCallBack(String taskDescription) async {
-    late var res;
-    late List user;
-    String param = body[1];
-    final data = {
-      "tasks": [
-        {"_id": "1", "description": taskDescription}
-      ]
-    };
-    final requestBody = jsonEncode(data);
-    log.i(requestBody);
-    var url = Uri.parse(
-        "https://zesty-skate-production.up.railway.app/api/tasks/task/$param");
-    await http
-        .post(url,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: requestBody)
-        .then((response) {
-      // Process the response
-      res = response.body;
-      user = jsonDecode(res);
-      return user;
-    }).catchError((error) {
-      log.e("from fetchNetworkCall => $error");
-      return Future.value([error]);
-    });
-    return user;
-  }
-
-  Future<List> _deleteTaskCallBack(String id) async {
-    late var res;
-    late List user;
-    String param = body[1];
-    final data = {
-      "tasks": [
-        {"_id": id}
-      ]
-    };
-    final requestBody = jsonEncode(data);
-    var url = Uri.parse(
-        "https://zesty-skate-production.up.railway.app/api/tasks/delete/$param");
-    await http
-        .post(url,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: requestBody)
-        .then((response) {
-      // Process the response
-      res = response.body;
-      user = jsonDecode(res);
-      return user;
-    }).catchError((error) {
-      log.e("from fetchNetworkCall => $error");
-      return Future.value([error]);
-    });
-    return user;
+    _kidData = fetchNetworkCall(body[1]);
+    _tasksList = fetchTasksList(body[1]);
+    var storeDataFuture = [fetchTokenNetworkCall(body[1]),fetchDeviceNetworkCall(body[1])];
+    await Future.wait(storeDataFuture);
   }
 
   @override
   void initState() {
     super.initState();
+    initData();
     controller = TextEditingController();
-    _kidData = _fetchNetworkCall();
-    _tasksList = _fetchTasksList();
+
   }
 
   @override
@@ -366,7 +269,7 @@ class _TasksListState extends State<TasksList> {
                                   if (delete!) {
                                     setState(
                                       () {
-                                        _tasksList = _deleteTaskCallBack(id);
+                                        _tasksList = deleteTaskCallBack(id,body[1]);
                                       },
                                     );
                                   }
@@ -444,7 +347,11 @@ class _TasksListState extends State<TasksList> {
             return;
           } else {
             log.wtf(task.toString());
-            _tasksList = _addTaskCallBack(task.toString());
+            _tasksList = addTaskCallBack(task.toString(),body[1]).then((value){
+              String token = sharedPreferences.getString('tmpToken')??'';
+              sendNotification("Task Added",task.toString(),token);
+              return value;
+            });
           }
         },
         child: SvgPicture.network(

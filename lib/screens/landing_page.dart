@@ -27,10 +27,10 @@ class _LandingPageState extends State<LandingPage> {
       height: h * 0.08,
     );
     moveToParentPage = () {
-      Get.toNamed("/signup_parent");
+      Get.toNamed("/signup_parent", arguments: true);
     };
     moveToChildPage = () {
-      Get.toNamed("/signup_child");
+      Get.toNamed("/signup_child",arguments: false);
     };
 
     return Scaffold(

@@ -54,10 +54,10 @@ class _AppListState extends State<AppList> {
                       scrollDirection:Axis.vertical,
                       child: Column(
                         children: <Widget>[
-                          AppCard("https://www.svgrepo.com/show/477142/color-blocks-internet-symbols.svg","Lorem"),
-                          AppCard("https://www.svgrepo.com/show/477142/color-blocks-internet-symbols.svg","Lorem"),
-                          AppCard("https://www.svgrepo.com/show/477142/color-blocks-internet-symbols.svg","Lorem"),
-                          AppCard("https://www.svgrepo.com/show/477142/color-blocks-internet-symbols.svg","Lorem"),
+                          AppCard("https://www.svgrepo.com/show/262913/youtube.svg","YouTube"),
+                          AppCard("https://www.svgrepo.com/show/262914/facebook.svg","Facebook"),
+                          AppCard("https://www.svgrepo.com/show/262912/instagram.svg","Instagram"),
+                          AppCard("https://www.svgrepo.com/show/271174/chrome.svg","Google Chrome"),
                         ],
                       ),
                     ),

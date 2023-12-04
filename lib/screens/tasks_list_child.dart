@@ -1,72 +1,58 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:kid_sec/widgets/children_card.dart';
+import 'package:kid_sec/main.dart';
 import 'package:kid_sec/widgets/profile_banner.dart';
+import 'package:kid_sec/widgets/tasks_card.dart';
+import '../core/constants/colors/kolors.dart';
 import '../utils/logger.dart';
 import '../widgets/skeleton_container.dart';
+import 'package:kid_sec/utils/essentials.dart';
 
-class ChildrenList extends StatefulWidget {
-  const ChildrenList({super.key});
+import '../widgets/task_card_child.dart';
+
+class TasksListChild extends StatefulWidget {
+  const TasksListChild({super.key});
 
   @override
-  _ChildrenListState createState() => _ChildrenListState();
+  _TasksListChildState createState() => _TasksListChildState();
 }
 
-class _ChildrenListState extends State<ChildrenList> {
+class _TasksListChildState extends State<TasksListChild> {
   String body = Get.arguments;
-  late Future<List> _kidsData;
-  final log = logger(ChildrenList);
+  final log = logger(TasksListChild);
+  late Future<Map<String, dynamic>> _kidData;
+  late Future<List> _tasksList;
+  late TextEditingController controller;
+  late Future <String> _token;
+  late Future <String> _name;
 
-  Future<List> _fetchNetworkCall() async {
-    late var res;
-    late List user;
-    final data = body;
-    String param =data;
-    var url = Uri.parse(
-        "https://zesty-skate-production.up.railway.app/api/children/list/$param");
-    await http.get(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    ).then((response) {
-      // Process the response
-      res = response.body;
-      user = jsonDecode(res);
-      return user;
-    }).catchError((error) {
-      log.e("from fetchNetworkCall => $error");
-      return Future.value([error]);
-    });
-    return user;
+  void initData() async{
+
+    _kidData = fetchNetworkCall(body);
+    _tasksList = fetchTasksList(body);
+    var storeDataFuture = [fetchTokenNetworkCall(body),fetchDeviceNetworkCall(body)];
+    await Future.wait(storeDataFuture);
   }
 
   @override
   void initState() {
     super.initState();
-    _kidsData = _fetchNetworkCall();
+    initData();
+    controller = TextEditingController();
+
   }
 
-  Widget buildSkeleton(BuildContext context) => Row(
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SkeletonContainer.rounded(
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: 25,
-              ),
-              const SizedBox(height: 8),
-              const SkeletonContainer.rounded(
-                width: 60,
-                height: 13,
-              ),
-            ],
-          ),
-        ],
-      );
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void cancel() {
+    Navigator.of(context).pop();
+    controller.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,15 +75,15 @@ class _ChildrenListState extends State<ChildrenList> {
               child: Column(
                 children: <Widget>[
                   ProfileBanner(body),
-                  SizedBox(
-                    height: size.height * 0.16,
+                  const SizedBox(
+                    height: 150,
                   ),
+
                   Expanded(
                     child: FutureBuilder<List>(
-                      future: _kidsData, // async work
+                      future: _tasksList, // async work
                       builder: (ctx, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.done) {
+                        if (snapshot.connectionState == ConnectionState.done) {
                           // If we got an error
                           if (snapshot.hasError) {
                             log.e("${snapshot.error}");
@@ -109,22 +95,14 @@ class _ChildrenListState extends State<ChildrenList> {
                             );
 
                             // if we got our data
-                          }
-                          else if (snapshot.hasData) {
+                          } else if (snapshot.hasData) {
                             // Extracting data from snapshot object
-                            final data =
-                            snapshot.data as List;
+                            final data = snapshot.data as List;
                             List<Widget> cardsList = [];
-                            if(data.isNotEmpty){
+                            if (data.isNotEmpty) {
                               for (int i = 0; i < data.length; i++) {
-                                cardsList.add(ChildrenCard(
-                                    "assets/images/kid.png",
-                                    data[i]['name'],
-                                    data[i]['id'],
-                                    data[i]['email'], () {
-                                  Get.toNamed('/child_profile',
-                                      arguments:[ body, data[i]['id']]);
-                                }));
+                                cardsList.add(TaskCardChild(data[i]['description'],
+                                    data[i]['_id'].toString()));
                               }
                               return SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
@@ -132,7 +110,7 @@ class _ChildrenListState extends State<ChildrenList> {
                                   children: cardsList,
                                 ),
                               );
-                            }else{
+                            } else {
                               return Container();
                             }
                           }
@@ -144,45 +122,46 @@ class _ChildrenListState extends State<ChildrenList> {
                               width: size.width * 0.8,
                               height: 75,
                             ),
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             SkeletonContainer.rounded(
                               width: size.width * 0.8,
                               height: 75,
                             ),
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             SkeletonContainer.rounded(
                               width: size.width * 0.8,
                               height: 75,
                             ),
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             SkeletonContainer.rounded(
                               width: size.width * 0.8,
                               height: 75,
                             ),
-                            const SizedBox(height: 10,),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             SkeletonContainer.rounded(
                               width: size.width * 0.8,
                               height: 75,
                             ),
-                            const SizedBox(height: 10,),
-                            SkeletonContainer.rounded(
-                              width: size.width * 0.8,
-                              height: 75,
-                            ),
-
                           ],
                         );
                       },
                     ),
-                   
-                    ),
-                  
+                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
+
     );
   }
 }

@@ -1,43 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:kid_sec/screens/login.dart';
 import 'package:kid_sec/widgets/image_view.dart';
-import 'package:kid_sec/widgets/welcome.dart';
 import '../core/constants/colors/kolors.dart';
-import '../widgets/choice_card.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ChildSignUp extends StatelessWidget {
-  const ChildSignUp({super.key});
+import '../utils/logger.dart';
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
-            .copyWith(secondary: Colors.pinkAccent),
-      ),
-      home: const ParentPage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+class ChildRegister extends StatefulWidget {
+  const ChildRegister({super.key});
 
-class ParentPage extends StatefulWidget {
-  const ParentPage({super.key, required this.title});
-
-  final String title;
 
   @override
-  State<ParentPage> createState() => _ParentPageState();
+  State<ChildRegister> createState() => _ChildRegisterState();
 }
 
-class _ParentPageState extends State<ParentPage> {
+class _ChildRegisterState extends State<ChildRegister> {
+  final log = logger(ChildRegister);
   final _formKey = GlobalKey<FormState>();
   late String _username;
   late String _password;
@@ -45,6 +25,8 @@ class _ParentPageState extends State<ParentPage> {
   late String _parentEmail;
   late VoidCallback moveToParentPage;
   late VoidCallback moveToChildPage;
+  final emailRegExp = RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +35,7 @@ class _ParentPageState extends State<ParentPage> {
     SizedBox box = SizedBox(
       height: h * 0.02,
     );
-    moveToParentPage = () {
-      print('Parent');
-    };
-    moveToChildPage = () {
-      print('Child');
-    };
+
     const Radius rad = Radius.circular(25);
     return Scaffold(
       //resizeToAvoidBottomInset: false,
@@ -86,8 +63,12 @@ class _ParentPageState extends State<ParentPage> {
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Name'),
                           validator: (value) {
+                            int minLength = 3;
                             if (value!.isEmpty) {
                               return 'Please enter a username';
+                            }
+                           else if(value.length < minLength) {
+                              return 'Field should have at least $minLength characters';
                             }
                           },
                           onSaved: (value) => _username = value!,
@@ -109,6 +90,8 @@ class _ParentPageState extends State<ParentPage> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter an email';
+                            }else if (!emailRegExp.hasMatch(value)) {
+                              return 'Invalid email address';
                             }
                           },
                           onSaved: (value) => _parentEmail = value!,
@@ -139,10 +122,10 @@ class _ParentPageState extends State<ParentPage> {
                                 "password": _password,
                                 "tag": "child"
                               };
-                              print(data);
+                              log.i(data);
                               // Encode the JSON object as a string
                               var body = jsonEncode(data);
-                              print(body);
+                              log.i(body);
                               var url = Uri.parse(
                                   "https://zesty-skate-production.up.railway.app/api/users");
                               http
@@ -154,10 +137,10 @@ class _ParentPageState extends State<ParentPage> {
                                       body: body)
                                   .then((response) {
                                 // Process the response
-                                print(response.body);
+                                log.i(response.body);
                               }).catchError((error) {
                                 // Handle any errors that may have occurred
-                                print(error);
+                                log.e(error);
                               });
                             }
                           },
@@ -178,7 +161,7 @@ class _ParentPageState extends State<ParentPage> {
                     child: const Text(" Login",
                         style: TextStyle(fontSize: 15, color: Kolors.kFuchsia)),
                     onTap: () {
-                      Get.toNamed("./login");
+                      Get.toNamed("/login",arguments: false);
                     },
                   ),
                 ],

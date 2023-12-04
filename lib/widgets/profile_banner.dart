@@ -6,8 +6,8 @@ import 'package:kid_sec/widgets/skeleton_container.dart';
 import '../utils/logger.dart';
 
 class ProfileBanner extends StatefulWidget {
-  late Map<String,dynamic> body;
-  ProfileBanner(  Map<String,dynamic>  b, {Key? key}) : super(key: key) {
+  late String body;
+  ProfileBanner(  String  b, {Key? key}) : super(key: key) {
     body = b;
   }
 
@@ -22,7 +22,7 @@ class _ProfileBannerState extends State<ProfileBanner> {
     late var res;
     late Map<String, dynamic> user;
     final data = widget.body;
-    String param = data.values.elementAt(0);
+    String param = data;
     var url =  Uri.parse(
         "https://zesty-skate-production.up.railway.app/api/names/byID/"+ param);
     await http

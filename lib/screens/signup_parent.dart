@@ -167,7 +167,7 @@ class _ParentPageState extends State<ParentPage> {
                         style:
                             TextStyle(fontSize: 15, color: Kolors.kFuchsia)),
                     onTap: () {
-                      Get.to(const Login());
+                      Get.toNamed('/login',arguments: true);
                     },
                   ),
                 ],

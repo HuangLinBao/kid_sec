@@ -1,16 +1,23 @@
 # kid_sec
 
-A new Flutter project.
+#### Parental Control application built with flutter
 
-## Getting Started
+#### By Tariq Sabri, [Mahmoud Basha](https://github.com/bashamahmoud)
 
-This project is a starting point for a Flutter application.
+## Technologies Used
 
-A few resources to get you started if this is your first Flutter project:
+* Flutter
+* Kotlin
+* NodeJS
+* MongoDB
+* Firebase
+* MapBox
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Description
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+kid_sec is a parental control app was developed using Flutter to ensure a consistent user interface across different platforms, while Kotlin was utilized specifically for accessing operating system permissions on Android devices. Communication between Flutter and native Android components was facilitated through platform channeling. For backend functionality, Node.js was employed, with MongoDB serving as the primary database solution for data storage. Additionally, Firebase was integrated to enable push notifications within the application.
+
+
+## Crucial Note
+
+The App's main features may not be working due to the APIs responsible for controlling the phone being restricted behind Enterprise wall.
